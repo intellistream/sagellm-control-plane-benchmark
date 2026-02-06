@@ -4,6 +4,17 @@
 benchmark_control_plane - sageLLM Scheduling Policy Benchmark
 ==============================================================
 
+**PACKAGE MIGRATION NOTICE**:
+This package has been renamed from `isage-control-plane-benchmark` to 
+`isagellm-control-plane-benchmark` to better reflect its association with sageLLM.
+
+If you're using the old package name, please update:
+    pip uninstall isage-control-plane-benchmark
+    pip install isagellm-control-plane-benchmark
+
+GitHub repository has also been renamed:
+    https://github.com/intellistream/sagellm-control-plane-benchmark
+
 This module provides benchmarking tools for evaluating different scheduling policies
 in sageLLM's Control Plane. It measures performance metrics like latency, throughput,
 and SLO compliance across various scheduling strategies.

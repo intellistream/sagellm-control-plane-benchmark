@@ -1,5 +1,10 @@
 # sageLLM Control Plane Benchmark
 
+> **⚠️ PACKAGE MIGRATION NOTICE**  
+> This package has been renamed from `isage-control-plane-benchmark` to `isagellm-control-plane-benchmark`.  
+> See [MIGRATION.md](MIGRATION.md) for migration instructions.  
+> **Old package users**: Run `pip uninstall isage-control-plane-benchmark && pip install isagellm-control-plane-benchmark`
+
 This module provides comprehensive benchmarking tools for evaluating different scheduling policies
 in sageLLM's Control Plane. It supports both **LLM-only** and **Hybrid (LLM + Embedding)**
 workloads.
@@ -44,8 +49,8 @@ The benchmark measures key performance metrics across various scheduling strateg
 ### Installation
 
 ```bash
-# Install sage-benchmark package
-pip install isage-control-plane-benchmark
+# Install from PyPI
+pip install isagellm-control-plane-benchmark
 
 # Or for development:
 pip install -e "packages/sage-benchmark[dev]"

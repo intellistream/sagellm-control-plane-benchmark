@@ -6,9 +6,9 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "isage-control-plane-benchmark"
-version = "0.1.0.1"
-description = "Control Plane scheduling benchmark for the SAGE ecosystem"
+name = "isagellm-control-plane-benchmark"
+version = "0.2.0.0"
+description = "Control Plane scheduling benchmark for sageLLM (formerly isage-control-plane-benchmark)"
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [
@@ -65,10 +65,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/intellistream/sage-control-plane-benchmark"
-Documentation = "https://github.com/intellistream/sage-control-plane-benchmark#readme"
-Repository = "https://github.com/intellistream/sage-control-plane-benchmark"
-Issues = "https://github.com/intellistream/sage-control-plane-benchmark/issues"
+Homepage = "https://github.com/intellistream/sagellm-control-plane-benchmark"
+Documentation = "https://github.com/intellistream/sagellm-control-plane-benchmark#readme"
+Repository = "https://github.com/intellistream/sagellm-control-plane-benchmark"
+Issues = "https://github.com/intellistream/sagellm-control-plane-benchmark/issues"
 
 [project.scripts]
 sage-cp-bench = "sage.benchmark_control_plane.cli:main"
