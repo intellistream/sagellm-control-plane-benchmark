@@ -55,7 +55,6 @@ dev = [
     "black>=23.0.0",
     "ruff==0.14.6",
     "pre-commit>=3.0.0",
-    "mypy>=1.0.0",
     "types-PyYAML>=6.0.0",
 ]
 
@@ -100,9 +99,6 @@ ignore = [
     "E722",
     "W293",
 ]
-
-[tool.mypy]
-ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "src"]
