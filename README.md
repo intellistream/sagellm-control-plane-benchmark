@@ -44,8 +44,8 @@ The benchmark measures key performance metrics across various scheduling strateg
 ### Installation
 
 ```bash
-# Install sage-benchmark package
-pip install isage-control-plane-benchmark
+# Install from PyPI
+pip install isagellm-control-plane-benchmark
 
 # Or for development:
 pip install -e "packages/sage-benchmark[dev]"

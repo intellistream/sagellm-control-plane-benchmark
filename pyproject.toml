@@ -1,19 +1,14 @@
 [build-system]
-requires = [
-    "setuptools>=64",
-    "wheel",
-]
+requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "isage-control-plane-benchmark"
+name = "isagellm-control-plane-benchmark"
 dynamic = ["version"]
-description = "Control Plane scheduling benchmark for the SAGE ecosystem"
+description = "Control Plane scheduling benchmark for sageLLM (formerly isage-control-plane-benchmark)"
 readme = "README.md"
 requires-python = ">=3.11"
-authors = [
-    { name = "IntelliStream Team", email = "shuhao_zhang@hust.edu.cn" },
-]
+authors = [{ name = "IntelliStream Team", email = "shuhao_zhang@hust.edu.cn" }]
 keywords = [
     "sage",
     "benchmark",
@@ -60,22 +55,21 @@ dev = [
     "black>=23.0.0",
     "ruff==0.14.6",
     "pre-commit>=3.0.0",
-    "mypy>=1.0.0",
     "types-PyYAML>=6.0.0",
     "isage-pypi-publisher>=0.2.0.0",
 ]
 
 [project.urls]
-Homepage = "https://github.com/intellistream/sage-control-plane-benchmark"
-Documentation = "https://github.com/intellistream/sage-control-plane-benchmark#readme"
-Repository = "https://github.com/intellistream/sage-control-plane-benchmark"
-Issues = "https://github.com/intellistream/sage-control-plane-benchmark/issues"
+Homepage = "https://github.com/intellistream/sagellm-control-plane-benchmark"
+Documentation = "https://github.com/intellistream/sagellm-control-plane-benchmark#readme"
+Repository = "https://github.com/intellistream/sagellm-control-plane-benchmark"
+Issues = "https://github.com/intellistream/sagellm-control-plane-benchmark/issues"
 
 [project.scripts]
 sage-cp-bench = "sage.benchmark_control_plane.cli:main"
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+package-dir = { "" = "src" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -83,12 +77,10 @@ include = ["sage*"]
 namespaces = true
 
 [tool.setuptools.dynamic]
-version = {attr = "sage.benchmark_control_plane._version.__version__"}
+version = { attr = "sage.benchmark_control_plane._version.__version__" }
 
 [tool.setuptools.package-data]
-"sage.benchmark_control_plane" = [
-    "visualization/templates/**/*",
-]
+"sage.benchmark_control_plane" = ["visualization/templates/**/*"]
 
 [tool.ruff]
 line-length = 100
@@ -109,19 +101,7 @@ ignore = [
     "W293",
 ]
 
-[tool.mypy]
-ignore_missing_imports = true
-
 [tool.pytest.ini_options]
-testpaths = [
-    "tests",
-    "src",
-]
-python_files = [
-    "test_*.py",
-    "*_test.py",
-]
-addopts = [
-    "-ra",
-    "--verbose",
-]
+testpaths = ["tests", "src"]
+python_files = ["test_*.py", "*_test.py"]
+addopts = ["-ra", "--verbose"]
