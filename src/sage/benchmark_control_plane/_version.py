@@ -1,4 +1,4 @@
 """Version information for sage-control-plane-benchmark."""
-__version__ = "0.2.0.7"
+__version__ = "0.2.0.8"
 __author__ = "IntelliStream Team"
 __email__ = "shuhao_zhang@hust.edu.cn"
