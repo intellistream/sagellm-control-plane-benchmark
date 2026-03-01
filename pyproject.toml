@@ -48,7 +48,10 @@ dependencies = [
 license = "MIT"
 
 [project.optional-dependencies]
+full = []
 dev = [
+    # dev includes [full] — no need for a separate extras install
+    "isagellm-control-plane-benchmark[full]",
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",
     "pytest-cov>=4.0.0",
