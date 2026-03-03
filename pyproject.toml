@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "isagellm-control-plane-benchmark"
-version = "0.2.0.2"
+dynamic = ["version"]
 description = "Control Plane scheduling benchmark for sageLLM (formerly isage-control-plane-benchmark)"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -48,7 +48,10 @@ dependencies = [
 license = "MIT"
 
 [project.optional-dependencies]
+full = []
+
 dev = [
+    "isagellm-control-plane-benchmark[full]",
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",
     "pytest-cov>=4.0.0",
@@ -56,7 +59,7 @@ dev = [
     "ruff==0.14.6",
     "pre-commit>=3.0.0",
     "types-PyYAML>=6.0.0",
-    "isage-pypi-publisher>=0.2.0",
+    "isage-pypi-publisher>=0.2.0.0",
 ]
 
 [project.urls]
