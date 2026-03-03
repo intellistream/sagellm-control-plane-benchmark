@@ -43,18 +43,29 @@ The benchmark measures key performance metrics across various scheduling strateg
 
 ### Installation
 
+The recommended way is to use the provided `quickstart.sh` script, which handles
+cleanup of previous installs before installing.
+
+```bash
+# Standard install — all packages resolved from PyPI (stable / release mode)
+./quickstart.sh --standard
+
+# Dev install — PyPI deps + local editable overlay for in-tree development
+./quickstart.sh --dev
+
+# Show usage help
+./quickstart.sh --help
+```
+
+Alternatively, install manually:
+
 ```bash
 # Install from PyPI
 pip install isagellm-control-plane-benchmark
 
-# Or for development:
-pip install -e "packages/sage-benchmark[dev]"
-
-# CLI dependencies
-pip install typer aiohttp pyyaml
-
-# Visualization dependencies (optional)
-pip install matplotlib jinja2
+# Or for development (editable install):
+pip install isagellm-control-plane-benchmark   # install deps from PyPI first
+pip install -e . --no-deps                     # overlay local source, skip dep re-resolution
 ```
 
 ### Running Your First Benchmark
