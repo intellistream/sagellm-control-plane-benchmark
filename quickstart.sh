@@ -1,142 +1,62 @@
 #!/usr/bin/env bash
-# quickstart.sh — Install isagellm-control-plane-benchmark
+# quickstart.sh — sagellm-control-plane-benchmark dev environment setup
 #
 # Usage:
-#   ./quickstart.sh --standard   Install from PyPI (stable / release mode)
-#   ./quickstart.sh --dev        Install editable from local source (dev mode)
-#   ./quickstart.sh --help       Show this help message
-#
-# Modes
-#   standard  All dependencies are resolved from PyPI. Use this for
-#             reproducible, release-grade environments.
-#   dev       Starts with the standard PyPI install, then overlays a local
-#             editable install of this repository so that in-tree changes
-#             take effect immediately.  Sibling isage-* repos found next to
-#             this directory are also installed in editable mode.
-#
-# Notes
-#   • No virtual environment is created; the active Python environment is used.
-#   • Each run first removes any previously installed isage* / isagellm*
-#     packages so the environment stays consistent.
+#   ./quickstart.sh               # dev mode (default): hooks + .[dev]  (includes [full])
+#   ./quickstart.sh --full        # optional backends only: .[full]
+#   ./quickstart.sh --standard    # core deps only: no extras
+#   ./quickstart.sh --yes         # non-interactive (assume yes)
+#   ./quickstart.sh --doctor      # diagnose environment issues
 
-set -euo pipefail
+set -e
 
-PACKAGE_PREFIX="isage"
-PYPI_PACKAGE="isagellm-control-plane-benchmark"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+RED='\033[0;31m'; YELLOW='\033[1;33m'; GREEN='\033[0;32m'
+CYAN='\033[0;36m'; BLUE='\033[0;34m'; BOLD='\033[1m'; NC='\033[0m'
 
-# ---------------------------------------------------------------------------
-# helpers
-# ---------------------------------------------------------------------------
-
-usage() {
-    awk 'NR>1{if(/^#/){sub(/^# ?/,""); print} else{exit}}' "$0"
-    exit 0
-}
-
-log()  { echo "[quickstart] $*"; }
-warn() { echo "[quickstart] WARNING: $*" >&2; }
-die()  { echo "[quickstart] ERROR: $*" >&2; exit 1; }
-
-# Run a pip command and print the full output when it fails.
-safe_pip() {
-    local tmp
-    tmp="$(mktemp)"
-    if ! pip "$@" >"$tmp" 2>&1; then
-        warn "pip $* failed — full output:"
-        cat "$tmp" >&2
-        rm -f "$tmp"
-        return 1
-    fi
-    rm -f "$tmp"
-}
-
-# ---------------------------------------------------------------------------
-# cleanup: uninstall all installed packages whose name starts with $PACKAGE_PREFIX
-# ---------------------------------------------------------------------------
-
-cleanup() {
-    log "Scanning for installed ${PACKAGE_PREFIX}* packages …"
-    local pkgs
-    pkgs="$(pip list --format=freeze 2>/dev/null \
-            | grep -i "^${PACKAGE_PREFIX}" \
-            | sed 's/==.*//' \
-            || true)"
-    if [ -z "$pkgs" ]; then
-        log "No ${PACKAGE_PREFIX}* packages found — skipping cleanup."
-        return
-    fi
-    log "Uninstalling: $(echo "$pkgs" | tr '\n' ' ')"
-    # shellcheck disable=SC2086
-    safe_pip uninstall -y $pkgs \
-        || warn "Some packages could not be uninstalled; continuing anyway."
-}
-
-# ---------------------------------------------------------------------------
-# standard install — all packages from PyPI
-# ---------------------------------------------------------------------------
-
-install_standard() {
-    log "Installing ${PYPI_PACKAGE} from PyPI …"
-    safe_pip install "${PYPI_PACKAGE}" \
-        || die "Standard install failed."
-    log "Standard install complete."
-}
-
-# ---------------------------------------------------------------------------
-# dev install — PyPI first, then local editable overlays
-# ---------------------------------------------------------------------------
-
-install_dev() {
-    log "Dev mode: installing ${PYPI_PACKAGE} from PyPI first …"
-    # Install the package (and its declared dependencies) from PyPI so that
-    # all transitive deps are resolved once.
-    safe_pip install "${PYPI_PACKAGE}" \
-        || die "Initial PyPI install (dev) failed."
-
-    # Overlay this repo as an editable install without re-resolving deps.
-    log "Overlaying local editable install (this repo) …"
-    safe_pip install -e "${SCRIPT_DIR}" --no-deps \
-        || die "Local editable install failed."
-
-    # Optionally overlay sibling isage-* repos that live next to this one.
-    local parent_dir
-    parent_dir="$(dirname "${SCRIPT_DIR}")"
-    for sibling in "${parent_dir}"/isage-* "${parent_dir}"/sagellm-*; do
-        [ -d "$sibling" ] || continue
-        [ "$sibling" = "$SCRIPT_DIR" ] && continue
-        if [ -f "${sibling}/pyproject.toml" ] || [ -f "${sibling}/setup.py" ]; then
-            log "Overlaying sibling repo: ${sibling}"
-            safe_pip install -e "${sibling}" --no-deps \
-                || warn "Could not install ${sibling} in editable mode; skipping."
-        fi
-    done
-
-    log "Dev install complete."
-}
-
-# ---------------------------------------------------------------------------
-# entry point
-# ---------------------------------------------------------------------------
-
-MODE=""
+EXTRAS="[dev]"; DOCTOR=false; YES=false
 for arg in "$@"; do
     case "$arg" in
-        --standard) MODE="standard" ;;
-        --dev)      MODE="dev" ;;
-        --help|-h)  usage ;;
-        *) die "Unknown argument: $arg  (use --help for usage)" ;;
+        --doctor)   DOCTOR=true ;;
+        --standard) EXTRAS="" ;;
+        --full)     EXTRAS="[full]" ;;
+        --dev)      EXTRAS="[dev]" ;;
+        --yes|-y)   YES=true ;;
     esac
 done
 
-if [ -z "$MODE" ]; then
-    die "No mode specified.  Run with --standard or --dev (use --help for usage)."
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$SCRIPT_DIR"
+
+echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${BOLD}${BLUE}  sagellm-control-plane-benchmark — Quick Start${NC}"
+echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+
+if [ "$DOCTOR" = true ]; then
+    echo -e "${YELLOW}Python:${NC} $(python3 --version 2>/dev/null || echo 'NOT FOUND')"
+    echo -e "${YELLOW}Conda env:${NC} ${CONDA_DEFAULT_ENV:-none}"
+    echo -e "${YELLOW}Venv:${NC} ${VIRTUAL_ENV:-none}"
+    exit 0
 fi
 
-log "Mode: ${MODE}"
-cleanup
+[ -n "$VIRTUAL_ENV" ] && echo -e "${RED}  ✗ Detected venv: $VIRTUAL_ENV — use Conda instead.${NC}" && exit 1
 
-case "$MODE" in
-    standard) install_standard ;;
-    dev)      install_dev ;;
-esac
+echo -e "${YELLOW}${BOLD}Step 1/3: Python environment${NC}"
+python3 -c "import sys; exit(0 if sys.version_info >= (3,10) else 1)" || { echo "Python 3.10+ required"; exit 1; }
+echo -e "  ${GREEN}✓ Python OK${NC}"; echo ""
+
+echo -e "${YELLOW}${BOLD}Step 2/3: Git hooks${NC}"
+if [ -d "$PROJECT_ROOT/hooks" ]; then
+    for hook_src in "$PROJECT_ROOT/hooks"/*; do
+        hook_name=$(basename "$hook_src")
+        cp "$hook_src" "$PROJECT_ROOT/.git/hooks/$hook_name" && chmod +x "$PROJECT_ROOT/.git/hooks/$hook_name"
+        echo -e "  ${GREEN}✓ $hook_name${NC}"
+    done
+else
+    echo -e "${YELLOW}⚠  hooks/ not found — skipping${NC}"
+fi
+echo ""
+
+echo -e "${YELLOW}${BOLD}Step 3/3: Installing package${NC}"
+[ -n "$EXTRAS" ] && pip install -e ".$EXTRAS" || pip install -e .
+echo -e "${GREEN}✓ Done!${NC}"
